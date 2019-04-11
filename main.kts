@@ -3,14 +3,93 @@
 println("UW Homework: Simple Kotlin")
 
 // write a "whenFn" that takes an arg of type "Any" and returns a String
+fun whenFn(x: Any): String {
+    when(x) {
+        "Hello" -> return "world"
+        is String -> return "Say what?"
+        0 -> return "zero"
+        1 -> return "one"
+        in 2..10 ->return "low number"
+        is Int -> return "a number"
+    }
+    return "I don't understand"
+}
 
 // write an "add" function that takes two Ints, returns an Int, and adds the values
+fun add(x: Int, y: Int): Int {
+    return x + y
+}
+
 // write a "sub" function that takes two Ints, returns an Int, and subtracts the values
+fun sub(x: Int, y: Int): Int {
+    return x - y
+}
+
 // write a "mathOp" function that takes two Ints and a function (that takes two Ints and returns an Int), returns an Int, and applies the passed-in-function to the arguments
+fun mathOp(x: Int, y: Int, func: (Int, Int) -> Int): Int {
+    return func(x, y)
+}
 
 // write a class "Person" with first name, last name and age
+class Person(val firstName: String, val lastName: String, var age: Int) {
+    val debugString: String
+        get() = "[Person firstName:" + this.firstName + " lastName:" + this.lastName + " age:" + this.age + "]"
 
+    fun equals(other: Person?): Boolean {
+        return (other?.firstName == this.firstName && other.lastName == this.lastName)
+    }
+
+    override fun hashCode(): Int {
+        return(this.firstName.hashCode() * this.lastName.hashCode() + this.age)
+    }
+}
 // write a class "Money"
+class Money(var amount: Int, var currency: String) {
+    init {
+        if (amount < 0) {
+            throw Exception("The input amount can't be less than zero")
+        } else if (currency != "USD" && currency != "EUR" &&
+                currency != "CAN" && currency != "GBP") {
+            throw Exception("The input currency is not supported")
+        }
+    }
+
+    fun convert(newCurrency: String): Money {
+        var newAmount = 0
+        when (this.currency) {
+            "USD" -> when (newCurrency) {
+                "GBP" -> newAmount = this.amount / 2
+                "USD" -> newAmount = this.amount
+                "EUR" -> newAmount = this.amount * 3 / 2
+                "CAN" -> newAmount = this.amount * 5 / 4
+            }
+            "GBP" -> when (newCurrency) {
+                "GBP" -> newAmount = this.amount
+                "USD" -> newAmount = this.amount * 2
+                "EUR" -> newAmount = this.amount * 3
+                "CAN" -> newAmount = this.amount * 10 / 4
+            }
+            "EUR" -> when (newCurrency) {
+                "GBP" -> newAmount = this.amount / 3
+                "USD" -> newAmount = this.amount * 2 / 3
+                "EUR" -> newAmount = this.amount
+                "CAN" -> newAmount = this.amount * 5 / 4 * 2 / 3
+            }
+            "CAN" -> when(newCurrency) {
+                "GBP" -> newAmount = this.amount / 3
+                "USD" -> newAmount = this.amount * 4 / 5
+                "EUR" -> newAmount = this.amount * 4 / 5 * 3 / 2
+                "CAN" -> newAmount = this.amount
+            }
+        }
+        return Money(newAmount, newCurrency)
+    }
+
+    operator fun plus(other: Money): Money {
+        var otherAmount = other.convert(this.currency).amount
+        return(Money(otherAmount + this.amount, this.currency))
+    }
+}
 
 // ============ DO NOT EDIT BELOW THIS LINE =============
 
